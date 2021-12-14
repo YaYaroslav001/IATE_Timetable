@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Расписание ИАТЭ</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="title_activity_main">Расписание ИАТЭ</string>
+    <string name="title_activity_timetable"></string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="Nothing_found">Ничего не найдено.</string>
+    <string name="loading">Загрузка…</string>
+    <string name="favourites">Избранные группы</string>
+    <string name="settings">Настройки</string>
+    <string name="error">Ошибка: </string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="enter_group_name">Введите название группы</string>
+    <string name="add_favourite">Добавить в избранное</string>
+    <string name="delete_favourite">Удалить из избранного</string>
+    <string name="group">Группа</string>
+    <string name="added_to_favourites">добавлена в избранное.</string>
+    <string name="deleted_from_favourites">удалена из избранного.</string>
+    <string name="limit_exceed">Превышен лимит на количество групп: 5</string>
+    <string name="even_week">Чётная неделя</string>
+    <string name="odd_week">Нечётная неделя</string>\
+    <string name="delete_favourites">Удалить избранные группы:</string>
+    <string name="delete">Удалить</string>
+    <string name="language">Язык:</string>
+
+
+
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+</resources>

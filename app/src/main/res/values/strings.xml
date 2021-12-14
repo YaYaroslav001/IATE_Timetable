@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IATE Timetable</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="title_activity_main">IATE Timetable</string>
+    <string name="title_activity_timetable"></string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="Nothing_found">Nothing found.</string>
+    <string name="loading">Loading…</string>
+    <string name="favourites">Favourited groups</string>
+    <string name="settings">Settings</string>
+    <string name="error">Error: </string>
+    <string name="try_again">Try again</string>
+    <string name="enter_group_name">Enter group name</string>
+    <string name="add_favourite">Add to favourites</string>
+    <string name="delete_favourite">Remove from favourites</string>
+    <string name="group">Group</string>
+    <string name="added_to_favourites">added to favourites.</string>
+    <string name="deleted_from_favourites">deleted from favourites.</string>
+    <string name="limit_exceed">The limit on the number of groups exceeded: 5</string>
+    <string name="even_week">Even week</string>
+    <string name="odd_week">Odd week</string>
+    <string name="delete_favourites">Remove favourite groups:</string>
+    <string name="delete">Delete</string>
+    <string name="language">Language:</string>
+
+
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+</resources>
