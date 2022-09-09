@@ -1,6 +1,7 @@
 package com.example.iate_timetable
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,8 +20,10 @@ import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.setPadding
+import com.google.android.material.navigation.NavigationView
 import org.jsoup.select.Elements
 
 
@@ -202,17 +205,6 @@ class TimetableActivity : AppCompatActivity() {
                     }
                 }
             }.start()
-        }
-
-        fun clearFavourites() {
-            val sharedPref = getSharedPreferences("favourites", 0)
-            val editor = sharedPref.edit()
-            for (i in 1..5) {
-                editor.remove("FavUrl$i")
-                editor.remove("FavName$i")
-                editor.remove("FavData$i")
-                editor.apply()
-            }
         }
 
         val actionBar: ActionBar? = supportActionBar

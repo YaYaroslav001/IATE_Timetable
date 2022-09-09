@@ -3,6 +3,7 @@ package com.example.iate_timetable
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
@@ -39,14 +40,30 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        fun clearFavourites() {
+            val sharedPref = getSharedPreferences("favourites", 0)
+            val editor = sharedPref.edit()
+            for (i in 1..5) {
+                editor.remove("FavUrl$i")
+                editor.remove("FavName$i")
+                editor.remove("FavData$i")
+            }
+            editor.apply()
+        }
+
         val languageGroup: RadioGroup = findViewById(R.id.language_radiogroup)
         val rus: RadioButton = findViewById(R.id.radio_russia)
         val eng: RadioButton = findViewById(R.id.radio_english)
+        val deleteButton: Button = findViewById(R.id.clear_favourites_button)
         val sharedPrefLang = getSharedPreferences("language", 0)
 
         rus.isChecked = sharedPrefLang.getString("lang", "0") == "ru"
 
         eng.isChecked = sharedPrefLang.getString("lang", "0") == "en"
+
+        deleteButton.setOnClickListener {
+            clearFavourites()
+        }
 
         languageGroup.setOnCheckedChangeListener (
             RadioGroup.OnCheckedChangeListener { group, checkedId ->

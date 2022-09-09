@@ -8,10 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Html
 import android.text.method.LinkMovementMethod
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.LinearInterpolator
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,24 +30,25 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var toggle: ActionBarDrawerToggle
     lateinit var locale: Locale
+    var maxInfoHeight = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_IATE_Timetable)
         setContentView(R.layout.activity_main)
 
-        fun getInfo(infoView: TextView, reconnectButton: Button, searchView: SearchView) {
+        fun getInfo(infoView: TextView, reconnectButton: Button, searchView: SearchView) {  //Получение информации со страницы сайта.
             Thread {
                 val stringBuilder = StringBuilder()
                 try {
-                    val doc: Document = Jsoup.connect("http://timetable.iate.obninsk.ru/").get()
+                    val doc: Document = Jsoup.connect("http://timetable.iate.obninsk.ru/").get()    //Получение страницы в виде документа.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         runOnUiThread {
                             infoView.text = Html.fromHtml(
                                 doc.select(".col-lg-12.pt-0.pt-lg-3.main-notice").toString(),
                                 Html.FROM_HTML_MODE_COMPACT
-                            )
-                            infoView.height = infoView.lineHeight * infoView.lineCount
+                            )   //Вывод информации с сайта.
+                            //infoView.height = infoView.lineHeight * infoView.lineCount  //Установление размера InfoView.
                         }
                     }
                     runOnUiThread {
@@ -60,8 +58,8 @@ class MainActivity : AppCompatActivity() {
                         reconnectButton.visibility = View.GONE
                         infoView.animate().setDuration(300).alpha(1f)
                         searchView.animate().setStartDelay(300).setDuration(300).alpha(1f)
-                    }
-                } catch (e: IOException) {
+                    }   //Анимация InfoView и SearchView
+                } catch (e: IOException) {  //Обработка ошибок.
                     runOnUiThread {
                         infoView.text =
                             stringBuilder.append("\n").
@@ -73,44 +71,49 @@ class MainActivity : AppCompatActivity() {
             }.start()
         }
 
-        fun createButtonDynamically(buttonLayout: LinearLayout, text: String, url: String, id: Int) {
+        fun createButtonDynamically(buttonLayout: LinearLayout, text: String, url: String, id: Int) {   //Создание кнопок с названиями групп.
             val dynamicButton = Button(this, null, 0, R.style.dynamicButtonStyle)
-            dynamicButton.elevation = 20f
-            dynamicButton.id = id
-            dynamicButton.text = text
+            dynamicButton.elevation = 20f   //Тень от кнопки.
+            dynamicButton.id = id   //Идентификатор кнопки.
+            dynamicButton.text = text   //Текст кнопки (название группы).
             dynamicButton.alpha = 0f
             dynamicButton.translationY = -10f
-            buttonLayout.addView(dynamicButton)
-            dynamicButton.setOnClickListener {
-                val i = Intent(this, TimetableActivity::class.java)
-                i.putExtra("url", url)
-                i.putExtra("group_name", dynamicButton.text)
-                startActivity(i)
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            buttonLayout.addView(dynamicButton) //Добавление кнопки на ButtonLayout.
+            dynamicButton.setOnClickListener {  //Обработка нажатия кнопки.
+                val i = Intent(this, TimetableActivity::class.java) //Создание новой активности.
+                i.putExtra("url", url)  //Передача в новую активность ссылки на группу.
+                i.putExtra("group_name", dynamicButton.text)    //Передача в новую активность названия группы.
+                startActivity(i)    //Старт активности.
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)  //Анимация при переходе в новую активность.
             }
-            dynamicButton.animate().setDuration(300).alpha(1f)
+            dynamicButton.animate().setDuration(300).alpha(1f)  //Анимация кнопки при её создании.
         }
 
-        fun getGroups (buttonLayout: LinearLayout, search: String) {
+        fun getGroups (buttonLayout: LinearLayout, search: String) {    //Получение списка групп.
             Thread {
                 try {
-                    val doc: Document = Jsoup.connect("http://timetable.iate.obninsk.ru/").get()
+                    val doc: Document = Jsoup.connect("http://timetable.iate.obninsk.ru/").get()    //Получение документа со списком групп.
                     val links = doc.select(".found-group").select("a")
                     runOnUiThread {
                         var i = 1
                         val placeholder = TextView(this, null, 0)
                         placeholder.textSize = 1f
                         buttonLayout.addView(placeholder)
-                        for (link in links) {
-                            if (link.text().contains(search, ignoreCase = true))
+                        for (link in links) {   //Создание нескольких кнопок.
+                            if (link.text().contains(search, ignoreCase = true)) {
                                 createButtonDynamically(buttonLayout, link.text(),
                                         link.attr("href"), i)
-                            ++i
+                                ++i
+                            }
                         }
-                        if (buttonLayout.childCount == 0){
+                        if (buttonLayout.childCount == 1){  //Если группа не обнаружена, вывод соответствующего сообщения.
                             val dynamicTextview = TextView(this)
                             dynamicTextview.text = getString(R.string.Nothing_found)
                             dynamicTextview.alpha = 0f
+                            dynamicTextview.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                            dynamicTextview.gravity = Gravity.CENTER_HORIZONTAL
+                            dynamicTextview.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                            dynamicTextview.textSize = 18f
                             buttonLayout.addView(dynamicTextview)
                             dynamicTextview.animate().setDuration(300).alpha(1f)
                         }
@@ -163,7 +166,6 @@ class MainActivity : AppCompatActivity() {
         val buttonLayout: LinearLayout = findViewById(R.id.buttonLayout)
         val searchView: SearchView = findViewById(R.id.searchView)
         val actionBar: ActionBar? = supportActionBar
-        var maxInfoHeight = 0
         var maxInfoHeightMeasured = false
         supportActionBar?.title = getString(R.string.title_activity_main)
         infoView.movementMethod = LinkMovementMethod.getInstance()
@@ -212,7 +214,7 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String): Boolean {
                 val currentHeight: Int = infoView.measuredHeight
                 if (!maxInfoHeightMeasured) {
-                    maxInfoHeight = infoView.lineHeight * infoView.lineCount
+                    maxInfoHeight = infoView.height
                     maxInfoHeightMeasured = true
                 }
                 if (currentHeight == maxInfoHeight || currentHeight == 0) {
@@ -242,7 +244,9 @@ class MainActivity : AppCompatActivity() {
                             i.putExtra("url", sharedPref.getString("FavUrl${it.itemId}", "0"))
                             i.putExtra("group_name", sharedPref.getString("FavName${it.itemId}", "0"))
                             startActivity(i)
+                            val drawerLayout: DrawerLayout = findViewById(R.id.drawerLayout)
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                            drawerLayout.closeDrawer(Gravity.LEFT)
                             false
                         }
                     }
@@ -258,16 +262,17 @@ class MainActivity : AppCompatActivity() {
                 val searchView:SearchView = findViewById(R.id.searchView)
                 searchView.clearFocus()
                 if (infoView.height == 0) {
-                    infoView.height = infoView.lineHeight * infoView.lineCount
-                    val valueAnimator =
-                        ValueAnimator.ofInt(0, infoView.lineHeight * infoView.lineCount)
-                    valueAnimator.addUpdateListener {
-                        val value = it.animatedValue as Int
-                        infoView.height = value
-                    }
-                    valueAnimator.interpolator = LinearInterpolator()
-                    valueAnimator.duration = 300
-                    valueAnimator.start()
+                    unfoldInfo(infoView, maxInfoHeight)
+//                    infoView.height = infoView.lineHeight * infoView.lineCount
+//                    val valueAnimator =
+//                        ValueAnimator.ofInt(0, infoView.lineHeight * infoView.lineCount)
+//                    valueAnimator.addUpdateListener {
+//                        val value = it.animatedValue as Int
+//                        infoView.height = value
+//                    }
+//                    valueAnimator.interpolator = LinearInterpolator()
+//                    valueAnimator.duration = 300
+//                    valueAnimator.start()
                     supportActionBar?.setDisplayHomeAsUpEnabled(true)
                     return true
                 }
@@ -280,23 +285,36 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun unfoldInfo(infoView: TextView, infoHeight: Int) {
+        val valueAnimator = ValueAnimator.ofInt(0, infoHeight)
+        valueAnimator.addUpdateListener {
+            val value = it.animatedValue as Int
+            infoView.height = value
+        }
+        valueAnimator.interpolator = LinearInterpolator()
+        valueAnimator.duration = 300
+        valueAnimator.start()
+    }
+
     override fun onBackPressed()
     {
         val infoView: TextView = findViewById(R.id.infoView)
         val searchView:SearchView = findViewById(R.id.searchView)
         searchView.clearFocus()
         if (infoView.height == 0) {
-            infoView.height = infoView.lineHeight * infoView.lineCount
-            val valueAnimator =
-                ValueAnimator.ofInt(0, infoView.lineHeight * infoView.lineCount)
-            valueAnimator.addUpdateListener {
-                val value = it.animatedValue as Int
-                infoView.height = value
-            }
-            valueAnimator.interpolator = LinearInterpolator()
-            valueAnimator.duration = 300
-            valueAnimator.start()
+            unfoldInfo(infoView, maxInfoHeight)
         }
+//            infoView.height = infoView.lineHeight * infoView.lineCount
+//            val valueAnimator =
+//                ValueAnimator.ofInt(0, infoView.lineHeight * infoView.lineCount)
+//            valueAnimator.addUpdateListener {
+//                val value = it.animatedValue as Int
+//                infoView.height = value
+//            }
+//            valueAnimator.interpolator = LinearInterpolator()
+//            valueAnimator.duration = 300
+//            valueAnimator.start()
+//        }
         else {
             moveTaskToBack(true)
             exitProcess(-1)
